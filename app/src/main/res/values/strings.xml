@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ImagesGallery</string>
+    <string name="msg_get_image_error">image from url Fail</string>
+    <string name="msg_page_parsing_not_correct">image_page_not_correct</string>
+</resources>
