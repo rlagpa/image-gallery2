@@ -41,6 +41,10 @@ public class ImageDownloadService {
 
         @Override
         public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+            if (response.body() == null) {
+                return;
+            }
+
             Bitmap bitmap = getBitmapFromInputStream(response.body().byteStream(), item.width, item.height);
             if (bitmap != null) {
                 cache.setAsync(item.getUrl(), bitmap); //use AsyncTask for Caching
@@ -91,22 +95,38 @@ public class ImageDownloadService {
      * 리사이징 부분은 구글 개발자 사이트 참고
      */
     private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        int height = options.outHeight;
-        int width = options.outWidth;
+        final int height = options.outHeight;
+        final int width = options.outWidth;
         int inSampleSize = 1;
 
         if (height > reqHeight || width > reqWidth) {
+
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
 
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
                 inSampleSize *= 2;
             }
-        }
 
+            // This offers some additional logic in case the image has a strange
+            // aspect ratio. For example, a panorama may have a much larger
+            // width than height. In these cases the total pixels might still
+            // end up being too large to fit comfortably in memory, so we should
+            // be more aggressive with sample down the image (=larger inSampleSize).
+
+            long totalPixels = width * height / inSampleSize;
+
+            // Anything more than 2x the requested pixels we'll sample down further
+            final long totalReqPixelsCap = reqWidth * reqHeight * 2;
+
+            while (totalPixels > totalReqPixelsCap) {
+                inSampleSize *= 2;
+                totalPixels /= 2;
+            }
+        }
         return inSampleSize;
     }
 

@@ -59,7 +59,9 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoad(@NonNull BitmapDto dto) {
         ImageHolder holder = imageHolders.get(dto.getPosition());
-        if (holder.imageView == null) {
+        boolean isUpdate = (holder.position == dto.getPosition()); //check current showing view(becauseof view recycle)
+
+        if (holder.imageView == null || !isUpdate) {
             return;
         }
         holder.imageView.setImageBitmap(dto.getBitmap());
@@ -76,6 +78,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
         Log.e("ham", "onBindViewHolder pos " + position + " holder " + holder);
         imageHolders.put(holder.getAdapterPosition(), holder);
+        holder.position = holder.getAdapterPosition();
         holder.imageView.setImageResource(R.drawable.frodo);
 
         holder.imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -97,13 +100,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
         });
     }
 
-    // FIXME
-    // view recycling에 따른 이미지 여러번 업데이트 되는 현상
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
     @Override
     public int getItemCount() {
         return dtoList == null ? 0 : dtoList.size();
@@ -112,6 +108,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
     class ImageHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.image_getty)
         ImageView imageView;
+        int position;
 
         ImageHolder(View view) {
             super(view);
