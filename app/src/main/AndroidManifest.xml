@@ -3,6 +3,7 @@
     package="com.example.imagesgallery">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- for under sdk version 4.4 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 

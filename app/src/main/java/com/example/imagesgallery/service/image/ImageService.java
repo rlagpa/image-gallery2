@@ -1,7 +1,7 @@
 package com.example.imagesgallery.service.image;
 
 import android.graphics.Bitmap;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.example.imagesgallery.model.BitmapDto;
 import com.example.imagesgallery.model.ImageDto;
@@ -12,7 +12,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 /**
- * TODO 파사드 주석
+ * image listing, downloading, cacheing에 대한 파사드 레이어
  * 이미지 관련된 작업
  * 1. 이미지 리스트를 만들기 위한 작업
  * 2. 이미지를 로딩하기 위한 요청(compositecache or url)
@@ -34,16 +34,15 @@ public class ImageService {
         imageListService.request();
     }
 
-    @SuppressWarnings("unchecked")
+    //load image(check cache and download image(set cache))
+    @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void load(ImageDto image) {
         //check for exist cache
         Bitmap bitmap = cache.get(image.getUrl());
 
         if (bitmap == null) {
-            Log.e("ham", "download pos " + image.getPosition());
-            //resize
-            downloadService.download(image);
+            downloadService.download(image); //download for url
         } else {
             BitmapDto target = BitmapDto.builder()
                     .position(image.getPosition())
@@ -51,12 +50,13 @@ public class ImageService {
                     .bitmap(bitmap)
                     .build();
 
-            Events.BUS.get().post(target);
-            Log.e("ham", "loadCache pos " + image.getPosition());
+            Events.BUS.post(target);
         }
     }
 
-    public void clearCache() {
-        cache.clear();
-    }
+    // set cache on bitmap load event
+//    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+//    public void onBitmapLoad(@NonNull BitmapDto dto) {
+//        cache.set(dto.getUrl(), dto.getBitmap());
+//    }
 }

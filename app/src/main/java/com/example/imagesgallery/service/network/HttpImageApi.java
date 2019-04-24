@@ -34,7 +34,7 @@ public interface HttpImageApi {
 
     Retrofit retrofit = new Retrofit.Builder()
 //            .client(client)
-            .callbackExecutor(Executors.newFixedThreadPool(Constants.API_CALLBACK_THREADPOOL_SIZE))
+            .callbackExecutor(Executors.newFixedThreadPool(Constants.Retro.API_CALLBACK_THREADPOOL_SIZE))
             .baseUrl(Constants.CURRENT_TYPE.getBaseUrl())
             .addConverterFactory(ScalarsConverterFactory.create())
             .build();

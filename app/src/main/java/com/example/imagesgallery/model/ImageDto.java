@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Builder
 @Getter
-public class ImageDto {
+public class ImageDto { //image url from site
     @Setter
     private int position;
     /**

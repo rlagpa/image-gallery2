@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Environment;
 
+import com.example.imagesgallery.config.Constants;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import java.io.BufferedInputStream;
@@ -21,7 +22,8 @@ import java.io.OutputStream;
  */
 
 class DiskCache {
-    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 100;
+    //TODO flexible disk size
+    private static final int DISK_CACHE_SIZE = Constants.Cache.DISK_SIZE;
     private static final int APP_VERSION = 1;
     private static final int VALUE_COUNT = 1;
     private static final String DIR_NAME = "imagesgallery";

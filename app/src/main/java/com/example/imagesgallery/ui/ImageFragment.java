@@ -16,6 +16,7 @@ import com.example.imagesgallery.di.ImageGalleryModule;
 import com.example.imagesgallery.model.ImageDto;
 import com.example.imagesgallery.service.Events;
 import com.example.imagesgallery.service.image.ImageService;
+import com.example.imagesgallery.service.image.cache.CompositeImageCache;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -37,6 +38,9 @@ public class ImageFragment extends Fragment {
     @Inject
     ImageService imageService;
 
+    @Inject
+    CompositeImageCache cache;
+
     @BindView(R.id.recyclerView)
     protected ImageRecyclerView recyclerView;
     private ProgressBarDialog progressBarDialog;
@@ -56,17 +60,17 @@ public class ImageFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Events.BUS.get().register(this);
-        Events.BUS.get().register(adapter);
-        Events.BUS.get().register(imageService);
+        Events.BUS.regist(this);
+        Events.BUS.regist(adapter);
+        Events.BUS.regist(imageService);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Events.BUS.get().unregister(imageService);
-        Events.BUS.get().unregister(adapter);
-        Events.BUS.get().unregister(this);
+        Events.BUS.unregist(imageService);
+        Events.BUS.unregist(adapter);
+        Events.BUS.unregist(this);
     }
 
     @Override
@@ -99,7 +103,8 @@ public class ImageFragment extends Fragment {
         imageService.requestImages();
     }
 
-    @SuppressWarnings("unchecked")
+    //set image List from site
+    @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onImageList(List<ImageDto> images) {
         if(images.isEmpty()) {

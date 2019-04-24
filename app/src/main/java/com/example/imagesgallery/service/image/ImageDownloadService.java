@@ -54,7 +54,7 @@ public class ImageDownloadService {
                         .bitmap(bitmap)
                         .build();
 
-                Events.BUS.get().post(target);
+                Events.BUS.post(target);
             }
         }
 

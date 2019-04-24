@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,17 +54,16 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
     private SparseArray<ImageHolder> imageHolders = new SparseArray<>();
 
-    @SuppressWarnings("unchecked")
+    //set image to imageView
+    @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoad(@NonNull BitmapDto dto) {
+    public void onBitmapLoad(@NonNull BitmapDto dto) {
         ImageHolder holder = imageHolders.get(dto.getPosition());
-        boolean isUpdate = (holder.position == dto.getPosition()); //check current showing view(becauseof view recycle)
-
-        if (holder.imageView == null || !isUpdate) {
+        //check current showing view(becauseof view recycle)
+        if (holder == null || holder.position != dto.getPosition()) {
             return;
         }
         holder.imageView.setImageBitmap(dto.getBitmap());
-        Log.e("ham", "onLoad delete pos " + dto.getPosition() + " holder " + holder);
         imageHolders.remove(dto.getPosition());
     }
 
@@ -76,7 +74,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
             return;
         }
 
-        Log.e("ham", "onBindViewHolder pos " + position + " holder " + holder);
         imageHolders.put(holder.getAdapterPosition(), holder);
         holder.position = holder.getAdapterPosition();
         holder.imageView.setImageResource(R.drawable.frodo);
@@ -93,7 +90,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
                         .linkUrl(item.getLinkUrl())
                         .position(holder.getAdapterPosition())
                         .build();
-                Events.BUS.get().post(target);
+                Events.BUS.post(target);
 
                 return true;
             }

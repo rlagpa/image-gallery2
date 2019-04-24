@@ -16,7 +16,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-//TODO dagger
 /**
  * get image list from site address
  */
@@ -30,7 +29,7 @@ public class ImageListService implements Callback<ResponseBody> {
     }
 
     private void post(List<ImageDto> images) {
-        Events.BUS.get().post(images);
+        Events.BUS.post(images);
     }
 
     @Override

@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class BitmapDto {
+public class BitmapDto { //user for loading image
     /**
      *  RecyclerView position
      **/

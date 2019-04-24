@@ -12,10 +12,18 @@ public enum Events {
     private EventBus bus;
 
     Events() {
-        bus = EventBus.builder().executorService(Executors.newFixedThreadPool(Constants.EVENT_BUS_THREADPOOL_SIZE)).build();
+        bus = EventBus.builder().executorService(Executors.newFixedThreadPool(Constants.EventBus.EVENT_BUS_THREADPOOL_SIZE)).build();
     }
 
-    public EventBus get() {
-        return bus;
+    public void post(Object event) {
+        bus.post(event);
+    }
+
+    public void regist(Object subscriber) {
+        bus.register(subscriber);
+    }
+
+    public void unregist(Object subscriber) {
+        bus.unregister(subscriber);
     }
 }

@@ -1,9 +1,9 @@
 package com.example.imagesgallery.service.image.cache;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.util.Log;
 
 /**
  * cache에 대한 get set
@@ -24,11 +24,9 @@ public class CompositeImageCache implements ImageCache {
     public Bitmap get(String imageUrl) {
         Bitmap bitmap = null;
 
-        if(memoryCache.isExistMemoryCache(imageUrl)) {
-            Log.e("ham", "cache mem");
+        if (memoryCache.isExistMemoryCache(imageUrl)) {
             bitmap = memoryCache.getBitmapFromMemCache(imageUrl);
-        } else if(diskCache.isExistDiskCache(getKey(imageUrl))) {
-            Log.e("ham", "disk mem");
+        } else if (diskCache.isExistDiskCache(getKey(imageUrl))) {
             bitmap = diskCache.getBitmapFromDiskCache(getKey(imageUrl));
         }
 
@@ -47,10 +45,11 @@ public class CompositeImageCache implements ImageCache {
         return String.valueOf(imageUrl.hashCode());
     }
 
-    public void clear() {
-        memoryCache.clearCache();
-        diskCache.clearCache();
-    }
+    // TODO clear cache
+//    public void clear() {
+//        memoryCache.clearCache();
+//        diskCache.clearCache();
+//    }
 
     public void set(String imageUrl, Bitmap bitmap) {
         addMemoryCache(imageUrl, bitmap);
@@ -61,6 +60,8 @@ public class CompositeImageCache implements ImageCache {
         new SetBitmapTask(url).execute(bitmap);
     }
 
+
+    @SuppressLint("StaticFieldLeak") //outer is singletone
     class SetBitmapTask extends AsyncTask<Bitmap, Void, Void> {
         String url;
 
@@ -68,6 +69,7 @@ public class CompositeImageCache implements ImageCache {
             this.url = url;
 
         }
+
         @Override
         protected Void doInBackground(Bitmap... params) {
             set(url, params[0]);
