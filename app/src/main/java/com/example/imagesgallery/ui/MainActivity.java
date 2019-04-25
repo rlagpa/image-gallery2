@@ -7,15 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.imagesgallery.R;
 
-import butterknife.ButterKnife;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        ButterKnife.bind(this);
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
