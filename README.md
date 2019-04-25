@@ -1,5 +1,5 @@
 # what is this
-kakaotalk interview project<br>
+sample project<br>
 
 # what does this do
 1.download html and parse image url list<br>
