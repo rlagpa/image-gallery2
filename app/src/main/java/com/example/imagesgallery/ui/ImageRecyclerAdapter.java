@@ -59,12 +59,13 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBitmapLoad(@NonNull BitmapDto dto) {
         ImageHolder holder = imageHolders.get(dto.getPosition());
+        imageHolders.remove(dto.getPosition());
+
         //check current showing view(becauseof view recycle)
         if (holder == null || holder.position != dto.getPosition()) {
             return;
         }
         holder.imageView.setImageBitmap(dto.getBitmap());
-        imageHolders.remove(dto.getPosition());
     }
 
     @Override
@@ -81,8 +82,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
         holder.imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                holder.imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-
                 ImageDto target = ImageDto.builder()
                         .width(holder.imageView.getMeasuredWidth())
                         .height(holder.imageView.getMeasuredHeight())
@@ -92,6 +91,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
                         .build();
                 Events.BUS.post(target);
 
+                holder.imageView.getViewTreeObserver().removeOnPreDrawListener(this);
                 return true;
             }
         });
